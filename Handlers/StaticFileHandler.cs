@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using CustomWebServer.Helpers;
 using CustomWebServer.Lib;
 using System.IO;
 
@@ -27,22 +25,22 @@ namespace CustomWebServer.Handlers
         {
             var fullPath = CreateFilePath(request);
             var fileInfo = new FileInfo(fullPath);
-
+            
             if(fileInfo.Exists)
             {
-                return new Response(200, CreateResponseHeaders(fileInfo),
-                                    await AsyncIOHelper.ReadTextAsync(fileInfo.FullName, Encoding.ASCII));
+                return new Response(200, CreateResponseHeaders(fileInfo), fileInfo.OpenRead());
             }
 
-            return new Response(404, new Dictionary<string, object>(),
-                                await AsyncIOHelper.ReadTextAsync(_404.FullName, Encoding.ASCII));
+            return new Response(404, new Dictionary<string, object>(), _404.OpenRead());
         }
 
         private IDictionary<string, object> CreateResponseHeaders(FileInfo fileInfo)
         {
-            var headers = new Dictionary<String, Object>();
-            headers.Add("Content-Type", GetContentType(fileInfo.Extension));
-            headers.Add("Content-Length", fileInfo.Length);
+            var headers = new Dictionary<String, Object>
+                              {
+                                  {"content-type", GetContentType(fileInfo.Extension)},
+                                  {"content-length", fileInfo.Length}
+                              };
 
             return headers;
         }
@@ -57,7 +55,7 @@ namespace CustomWebServer.Handlers
         private string CreateFilePath(IRequest request)
         {
             var rootPath = _rootDirectory.FullName;
-            var virtualPath = request.RequestUri;
+            var virtualPath = request.RequestUri.LocalPath;
             
             if(!rootPath.EndsWith(@"\"))
             {

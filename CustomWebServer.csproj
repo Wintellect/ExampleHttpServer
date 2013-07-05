@@ -46,7 +46,7 @@
     <Compile Include="Handlers\IRequestHandler.cs" />
     <Compile Include="Handlers\Router.cs" />
     <Compile Include="Handlers\StaticFileHandler.cs" />
-    <Compile Include="Helpers\AsyncIOHelper.cs" />
+    <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Lib\IRequest.cs" />
     <Compile Include="Lib\IResponse.cs" />
     <Compile Include="Lib\Server.cs" />

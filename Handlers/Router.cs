@@ -45,7 +45,7 @@ namespace CustomWebServer.Handlers
         {
             if (req.RequestUri != null)
             {
-                foreach (var route in _routes.Where(route => route.Pattern.IsMatch(req.RequestUri)))
+                foreach (var route in _routes.Where(route => route.Pattern.IsMatch(req.RequestUri.OriginalString)))
                 {
                     return await route.Handler.HandleRequest(req);
                 }

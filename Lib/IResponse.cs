@@ -17,42 +17,11 @@ namespace CustomWebServer.Lib
         public IDictionary<string, object> Headers { get; set; }
         public Object Body { get; set; }
 
-        public Response(Int32 statusCode, IDictionary<String, Object> headers, String body = null)
+        public Response(Int32 statusCode, IDictionary<String, Object> headers, Object body = null)
         {
             StatusCode = statusCode;
             Headers = headers;
             Body = body;
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendFormat("HTTP/1.1 {0}{1}", StatusCode, Environment.NewLine);
-
-            AddMissingHeaders();
-
-            foreach (var header in Headers)
-            {
-                sb.AppendFormat("{0}: {1}{2}", header.Key, header.Value, Environment.NewLine);
-            }
-
-            sb.AppendLine();
-
-            if (Body != null)
-            {
-                sb.Append(Body);
-            }
-
-            return sb.ToString();
-        }
-
-        private void AddMissingHeaders()
-        {
-            if(!Headers.ContainsKey("Date"))
-            {
-                Headers.Add("Date", DateTime.UtcNow);
-            }
         }
     }
 }
