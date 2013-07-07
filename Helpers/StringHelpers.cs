@@ -1,10 +1,9 @@
-﻿using CustomWebServer.Lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CustomWebServer.Helpers
 {
@@ -14,27 +13,15 @@ namespace CustomWebServer.Helpers
         {
             return str == null ? null : str.Trim();
         }
-    }
 
-    public static class RequestExtensions
-    {
-        public static string AsString(this IRequest request)
+        public static string Unquote(this String str)
         {
-            var sb = new StringBuilder();
+            return str == null ? null : str.Trim('"');
+        }
 
-            sb.AppendFormat("{0} {1} HTTP/1.1", request.Method, request.RequestUri.PathAndQuery);
-            sb.AppendLine();
-            
-            foreach (var header in request.Headers)
-            {
-                sb.AppendFormat("{0}: {1}", header.Key, header.Value);
-                sb.AppendLine();
-            }
-
-            sb.AppendLine();
-            sb.Append(request.Body);
-
-            return sb.ToString();
+        public static string UrlDecode(this String str)
+        {
+            return str == null ? null : HttpUtility.UrlDecode(str);
         }
     }
 }

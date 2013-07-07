@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using CustomWebServer.Handlers;
+using CustomWebServer.Helpers;
 
 namespace CustomWebServer.Lib
 {
@@ -30,9 +31,12 @@ namespace CustomWebServer.Lib
                 {
                     var request = await ReadRequest(client.GetStream());
 
-                    var response = await SafeRequestHandler(handler, request);
+                    if (IsRequestValid(request))
+                    {
+                        var response = await SafeRequestHandler(handler, request);
 
-                    await WriteResponse(client.GetStream(), response);
+                        await WriteResponse(client.GetStream(), response);
+                    }
                 }
             }
         }
@@ -114,14 +118,14 @@ namespace CustomWebServer.Lib
         {
             if (bodyStream == null) return;
 
-            var i = 0;
             var bytes = new byte[1024];
 
             using (bodyStream)
             {
+                var i = 0;
                 while ((i = await bodyStream.ReadAsync(bytes, 0, bytes.Length)) != 0)
                 {
-                    await responseStream.WriteAsync(bytes, 0, bytes.Length);
+                    await responseStream.WriteAsync(bytes, 0, i);
                 }
             }
         }
@@ -136,7 +140,7 @@ namespace CustomWebServer.Lib
 
             foreach (var header in response.Headers)
             {
-                sb.AppendFormat("{0}: {1}{2}", header.Key, header.Value, Environment.NewLine);
+                sb.AppendLine(header.FormatAsHeader());
             }
 
             sb.AppendLine();
@@ -146,10 +150,13 @@ namespace CustomWebServer.Lib
 
         private void AddMissingHeaders(IResponse response)
         {
-            if (!response.Headers.ContainsKey("Date"))
-            {
-                response.Headers.Add("Date", DateTime.UtcNow);
-            }
+            response.AddHeaderIfMissing("date", DateTime.UtcNow);
+            response.AddHeaderIfMissing("connection", "close");
+        }
+
+        private static bool IsRequestValid(string request)
+        {
+            return !String.IsNullOrEmpty(request);
         }
     }
 }

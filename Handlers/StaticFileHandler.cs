@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CustomWebServer.Helpers;
 using CustomWebServer.Lib;
 using System.IO;
 
@@ -28,19 +29,34 @@ namespace CustomWebServer.Handlers
             
             if(fileInfo.Exists)
             {
-                return new Response(200, CreateResponseHeaders(fileInfo), fileInfo.OpenRead());
+                var etag = CreateEtag(fileInfo);
+
+                if (request.IsExpired(fileInfo.LastWriteTime, etag))
+                {
+                    return new Response(200, CreateResponseHeaders(fileInfo), fileInfo.OpenRead());
+                }
+
+                return new Response(304, CreateResponseHeaders(fileInfo, true));
             }
 
             return new Response(404, new Dictionary<string, object>(), _404.OpenRead());
         }
 
-        private IDictionary<string, object> CreateResponseHeaders(FileInfo fileInfo)
+        private IDictionary<string, object> CreateResponseHeaders(FileInfo fileInfo, Boolean excludeEntityHeaders = false)
         {
             var headers = new Dictionary<String, Object>
                               {
-                                  {"content-type", GetContentType(fileInfo.Extension)},
-                                  {"content-length", fileInfo.Length}
+                                  {"expires", DateTime.UtcNow.AddHours(1)},
+                                  {"cache-control", TimeSpan.FromHours(1)},
+                                  {"last-modified", fileInfo.LastWriteTimeUtc},
+                                  {"etag", CreateEtag(fileInfo)}
                               };
+
+            if(!excludeEntityHeaders)
+            {
+                headers.Add("content-type", GetContentType(fileInfo.Extension));
+                headers.Add("content-length", fileInfo.Length);
+            }
 
             return headers;
         }
@@ -73,6 +89,11 @@ namespace CustomWebServer.Handlers
             }
 
             return Path.Combine(rootPath, virtualPath);
+        }
+
+        private static string CreateEtag(FileInfo fileInfo)
+        {
+            return ETag.Create(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTimeUtc.Ticks);
         }
 
         private static IDictionary<string, string> SetupContentTypes()

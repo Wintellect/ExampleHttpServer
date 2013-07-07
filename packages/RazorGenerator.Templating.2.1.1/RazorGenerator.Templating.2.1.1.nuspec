@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>RazorGenerator.Templating</id>
+    <version>2.1.1</version>
+    <authors>RazorGenerator contributors</authors>
+    <owners>RazorGenerator contributors</owners>
+    <licenseUrl>http://razorgenerator.codeplex.com/license</licenseUrl>
+    <projectUrl>http://razorgenerator.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Runtime support for Razor generated code</description>
+    <tags>mvc razor</tags>
+    <references>
+      <reference file="RazorGenerator.Templating.dll" />
+    </references>
+  </metadata>
+</package>
