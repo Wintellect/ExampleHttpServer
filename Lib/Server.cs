@@ -17,7 +17,7 @@ namespace CustomWebServer.Lib
             _listener = new TcpListener(ip, port);
         }
 
-        public async Task StartAsync(Func<IResponse, IResponse> handler)
+        public async Task StartAsync(Func<IRequest, IResponse> handler)
         {
             _listener.Start();
 
@@ -37,7 +37,7 @@ namespace CustomWebServer.Lib
             }
         }
 
-        private async Task<IResponse> HandleRequest(Func<IResponse, IResponse> handler, String request)
+        private async Task<IResponse> HandleRequest(Func<IRequest, IResponse> handler, String request)
         {
             throw new NotImplementedException();
         }
