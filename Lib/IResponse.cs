@@ -7,7 +7,7 @@ namespace CustomWebServer.Lib
     {
         Int32 StatusCode { get; set; }
         String StatusDescription { get; set; }
-        IDictionary<String, Object> Headers { get; set; }
+        IDictionary<String, Object> Headers { get; }
         Object Body { get; set; }
     }
 }
