@@ -7,7 +7,8 @@ namespace CustomWebServer
     {
         static void Main(string[] args)
         {
-            var server = new Server("127.0.0.1", 7777);
+            var port = GetPort(args);
+            var server = new Server("127.0.0.1", port);
 
             server.StartAsync(request => {
 
@@ -15,6 +16,18 @@ namespace CustomWebServer
                                   throw new NotImplementedException();
 
                               }).Wait();
+        }
+
+        private static Int32 GetPort(string[] args)
+        {
+            var port = 7777;
+
+            if(args.Length > 0)
+            {
+                Int32.TryParse(args[0], out port);
+            }
+
+            return port;
         }
     }
 }
