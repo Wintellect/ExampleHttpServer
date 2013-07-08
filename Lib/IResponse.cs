@@ -19,11 +19,11 @@ namespace CustomWebServer.Lib
         public IDictionary<string, object> Headers { get; private set; }
         public Object Body { get; set; }
 
-        public Response(Int32 status, String description, IEnumerable<KeyValuePair<String, Object>> headers, Object body = null)
+        public Response(Int32 status, String description, IDictionary<String, Object> headers, Object body = null)
         {
             StatusCode = status;
             StatusDescription = description;
-            Headers = GetHeaders(headers ?? Enumerable.Empty<KeyValuePair<String, Object>>());
+            Headers = GetHeaders(headers ?? new Dictionary<String, Object>());
             Body = body;
         }
 
