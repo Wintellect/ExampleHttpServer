@@ -45,50 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\EchoRequestHandler.cs" />
-    <Compile Include="Handlers\FileNotFoundHandler.cs" />
-    <Compile Include="Handlers\HelloWorldHandler.cs" />
-    <Compile Include="Handlers\IRequestHandler.cs" />
-    <Compile Include="Handlers\PostbackHandler.cs" />
-    <Compile Include="Handlers\Router.cs" />
-    <Compile Include="Handlers\StaticFileHandler.cs" />
-    <Compile Include="Helpers\DateTimeExtensions.cs" />
-    <Compile Include="Helpers\ETag.cs" />
-    <Compile Include="Helpers\HeaderFormatter.cs" />
-    <Compile Include="Helpers\RequestExtensions.cs" />
-    <Compile Include="Helpers\ResponseExtensions.cs" />
-    <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Lib\IRequest.cs" />
     <Compile Include="Lib\IResponse.cs" />
     <Compile Include="Lib\Server.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleTemplate.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SampleTemplate.cshtml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PostbackHandlerView.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PostbackHandlerView.cshtml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="SampleTemplate.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>SampleTemplate.generated.cs</LastGenOutput>
-    </None>
-    <None Include="Views\PostbackHandlerView.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>PostbackHandlerView.generated.cs</LastGenOutput>
-    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
