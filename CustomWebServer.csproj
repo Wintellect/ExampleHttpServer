@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\InternalServerErrorHandler.cs" />
+    <Compile Include="Handlers\StaticFileHandler.cs" />
+    <Compile Include="Handlers\RoutingHandler.cs" />
     <Compile Include="Handlers\FileNotFoundHandler.cs" />
     <Compile Include="Handlers\GenericHandler.cs" />
     <Compile Include="Handlers\PlainTextHandler.cs" />

@@ -13,26 +13,11 @@ namespace CustomWebServer
             var port = GetPort(args);
             var server = new Server("127.0.0.1", port);
 
-            server.StartAsync(
-                new GenericHandler(
-                    request => {
+            var router = new RoutingHandler();
+            router.CreateRoute(@"/|(\..+)$", new StaticFileHandler(@"C:\Dev\CustomWebServer\TestWebSite", "index.html"));
+            router.SetDefaultHandler(new FileNotFoundHandler());
 
-                        if (request.RequestUri.LocalPath == "/")
-                        {
-                            return new PlainTextHandler("Hello World!")
-                                .HandleRequest(request);
-                        }
-
-                        if (request.RequestUri.LocalPath == "/index.html")
-                        {
-                            return new RedirectHandler("/")
-                                .HandleRequest(request);
-                        }
-
-                        return new FileNotFoundHandler()
-                            .HandleRequest(request);
-
-                    })).Wait();
+            server.StartAsync(router).Wait();
         }
 
         private static Int32 GetPort(string[] args)

@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using CustomWebServer.Handlers;
+using CustomWebServer.Helpers;
 
 namespace CustomWebServer.Lib
 {
@@ -48,7 +50,8 @@ namespace CustomWebServer.Lib
             }
             catch(Exception ex)
             {
-                response = new Response(500, "Internal Server Error", null, ex);
+                var errorHandler = new InternalServerErrorHandler(ex);
+                response = errorHandler.HandleRequest(new Request(request)).Result;
             }
 
             return response;
@@ -78,26 +81,62 @@ namespace CustomWebServer.Lib
             await stream.WriteAsync(headerBytes, 0, headerBytes.Length);
 
             if (response.Body == null) return;
-
-            var bodyBytes = Encoding.UTF8.GetBytes(response.Body.ToString());
-
-            await stream.WriteAsync(bodyBytes, 0, bodyBytes.Length);
+            
+            if (response.Body is Stream)
+            {
+                await WriteBody(stream, response.Body as Stream);
+            }
+            else if (response.Body is String)
+            {
+                await WriteBody(stream, response.Body as String);
+            }
         }
 
+        private async Task WriteBody(Stream responseStream, String body)
+        {
+            var bodyBytes = Encoding.UTF8.GetBytes(body);
+
+            await responseStream.WriteAsync(bodyBytes, 0, bodyBytes.Length);
+        }
+
+        private async Task WriteBody(Stream responseStream, Stream bodyStream)
+        {
+            if (bodyStream == null) return;
+
+            var bytes = new byte[1024];
+
+            using (bodyStream)
+            {
+                var i = 0;
+                while ((i = await bodyStream.ReadAsync(bytes, 0, bytes.Length)) != 0)
+                {
+                    await responseStream.WriteAsync(bytes, 0, i);
+                }
+            }
+        }
+        
         public String FormatHeaders(IResponse response)
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat("HTTP/1.1 {0} {1}{2}", response.StatusCode, response.StatusDescription, Environment.NewLine);
+            sb.AppendFormat("HTTP/1.1 {0}{1}", response.StatusCode, Environment.NewLine);
+
+            AddMissingHeaders(response);
 
             foreach (var header in response.Headers)
             {
-                sb.AppendFormat("{0}: {1}{2}", header.Key, header.Value, Environment.NewLine);
+                sb.AppendLine(header.FormatAsHeader());
             }
 
             sb.AppendLine();
 
             return sb.ToString();
+        }
+
+        private void AddMissingHeaders(IResponse response)
+        {
+            response.AddHeaderIfMissing("date", DateTime.UtcNow);
+            response.AddHeaderIfMissing("connection", "close");
         }
 
         private static bool IsRequestValid(String request)
