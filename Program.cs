@@ -13,6 +13,8 @@ namespace CustomWebServer
 
             server.StartAsync(request => {
 
+                                  //TODO: Check request path and return 404 unless root
+
                                   var body = "Hello World!";
 
                                   return new Response(
