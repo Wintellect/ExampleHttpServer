@@ -9,9 +9,9 @@ namespace CustomWebServer.Handlers
 {
     public class GenericHandler: IRequestHandler
     {
-        private Func<IRequest, IResponse> Handler { get; set; }
+        private Func<IRequest, Task<IResponse>> Handler { get; set; }
  
-        public GenericHandler(Func<IRequest, IResponse> handler)
+        public GenericHandler(Func<IRequest, Task<IResponse>> handler)
         {
             if(handler == null)
             {
@@ -21,7 +21,7 @@ namespace CustomWebServer.Handlers
             Handler = handler;
         }
 
-        public async Task<IResponse> HandleRequest(IRequest request)
+        public Task<IResponse> HandleRequest(IRequest request)
         {
             return Handler(request);
         }
