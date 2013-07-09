@@ -79,6 +79,11 @@ namespace CustomWebServer.Helpers
             return formParams;
         }
 
+        public static Boolean HasBody(this IRequest request)
+        {
+            return !String.IsNullOrWhiteSpace(request.Body);
+        }
+
         private static KeyValuePair<string, object> CreateFormParameter(IList<String> kvp)
         {
             return kvp.Count > 1

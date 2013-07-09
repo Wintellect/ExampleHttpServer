@@ -95,7 +95,7 @@ namespace CustomWebServer.Lib
         private async Task WriteBody(Stream responseStream, String body)
         {
             var bodyBytes = Encoding.UTF8.GetBytes(body);
-
+            
             await responseStream.WriteAsync(bodyBytes, 0, bodyBytes.Length);
         }
 
@@ -137,6 +137,12 @@ namespace CustomWebServer.Lib
         {
             response.AddHeaderIfMissing("date", DateTime.UtcNow);
             response.AddHeaderIfMissing("connection", "close");
+
+            var body = response.Body as string;
+            if (body != null)
+            {
+                response.AddHeaderIfMissing("content-length", body.Length);
+            }
         }
 
         private static bool IsRequestValid(String request)
