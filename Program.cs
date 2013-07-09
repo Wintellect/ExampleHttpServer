@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CustomWebServer.Lib;
 
 namespace CustomWebServer
@@ -12,8 +13,20 @@ namespace CustomWebServer
 
             server.StartAsync(request => {
 
-                                  //TODO: Create new response and return here
-                                  throw new NotImplementedException();
+                                  var body = "Hello World!";
+
+                                  return new Response(
+                                  200,
+                                  "OK",
+                                  new Dictionary<string, object>
+                                      {
+                                      {"date", DateTime.UtcNow},
+                                      {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
+                                      {"content-type", "text/plain"},
+                                      {"content-length", body.Length}
+                                      },
+                                  body);
+
 
                               }).Wait();
         }
