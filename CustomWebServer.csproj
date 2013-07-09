@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\HeaderValueExtensions.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Lib\IRequest.cs" />

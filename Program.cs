@@ -13,22 +13,35 @@ namespace CustomWebServer
 
             server.StartAsync(request => {
 
-                                  //TODO: Check request path and return 404 unless root
+                if (request.RequestUri.LocalPath == "/")
+                {
+                    var body = "Hello World!";
 
-                                  var body = "Hello World!";
+                    return new Response(
+                    200,
+                    "OK",
+                    new Dictionary<string, object>
+                        {
+                        {"date", DateTime.UtcNow},
+                        {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
+                        {"content-type", "text/plain"},
+                        {"content-length", body.Length}
+                        },
+                    body);
+                }
+
+                var body404 = "<h1>No soup for you!</h1>";
 
                                   return new Response(
-                                  200,
-                                  "OK",
+                                  404, "Not Found",
                                   new Dictionary<string, object>
                                       {
                                       {"date", DateTime.UtcNow},
                                       {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
-                                      {"content-type", "text/plain"},
-                                      {"content-length", body.Length}
+                                      {"content-type", "text/html"},
+                                      {"content-length", body404.Length}
                                       },
-                                  body);
-
+                                  body404);
 
                               }).Wait();
         }
