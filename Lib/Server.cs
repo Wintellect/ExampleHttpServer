@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using CustomWebServer.Helpers;
 
 namespace CustomWebServer.Lib
 {
@@ -19,7 +18,7 @@ namespace CustomWebServer.Lib
             _listener = new TcpListener(ip, port);
         }
 
-        public async Task StartAsync(Func<IRequest, IResponse> handler)
+        public async Task StartAsync(IRequestHandler handler)
         {
             _listener.Start();
 
@@ -39,13 +38,13 @@ namespace CustomWebServer.Lib
             }
         }
 
-        private async Task<IResponse> HandleRequest(Func<IRequest, IResponse> handler, String request)
+        private async Task<IResponse> HandleRequest(IRequestHandler handler, String request)
         {
             IResponse response;
 
             try
             {
-                response = handler(new Request(request));
+                response = await handler.HandleRequest(new Request(request));
             }
             catch(Exception ex)
             {

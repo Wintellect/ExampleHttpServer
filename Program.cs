@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CustomWebServer.Handlers;
 using CustomWebServer.Helpers;
 using CustomWebServer.Lib;
 
@@ -12,52 +13,54 @@ namespace CustomWebServer
             var port = GetPort(args);
             var server = new Server("127.0.0.1", port);
 
-            server.StartAsync(request => {
+            server.StartAsync(
+                new GenericHandler(
+                    request => {
 
-                if (request.RequestUri.LocalPath == "/")
-                {
-                    var body = "Hello World!";
-
-                    return new Response(
-                    200,
-                    "OK",
-                    new Dictionary<string, object>
+                        if (request.RequestUri.LocalPath == "/")
                         {
-                        {"date", DateTime.UtcNow},
-                        {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
-                        {"content-type", "text/plain"},
-                        {"content-length", body.Length}
-                        },
-                    body);
-                }
+                            var body = "Hello World!";
 
-                if(request.RequestUri.LocalPath == "/index.html")
-                {
-                    return new Response(
-                    302,
-                    "Found",
-                    new Dictionary<string, object>
+                            return new Response(
+                                200,
+                                "OK",
+                                new Dictionary<string, object>
+                                    {
+                                        {"date", DateTime.UtcNow},
+                                        {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
+                                        {"content-type", "text/plain"},
+                                        {"content-length", body.Length}
+                                    },
+                                body);
+                        }
+
+                        if (request.RequestUri.LocalPath == "/index.html")
                         {
-                        {"date", DateTime.UtcNow},
-                        {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
-                        {"location", request.RequestUri.RebaseTo("/")}
-                        });
-                }
+                            return new Response(
+                                302,
+                                "Found",
+                                new Dictionary<string, object>
+                                    {
+                                        {"date", DateTime.UtcNow},
+                                        {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
+                                        {"location", request.RequestUri.RebaseTo("/")}
+                                    });
+                        }
 
-                var body404 = "<h1>No soup for you!</h1>";
+                        var body404 = "<h1>No soup for you!</h1>";
 
-                                  return new Response(
-                                  404, "Not Found",
-                                  new Dictionary<string, object>
-                                      {
-                                      {"date", DateTime.UtcNow},
-                                      {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
-                                      {"content-type", "text/html"},
-                                      {"content-length", body404.Length}
-                                      },
-                                  body404);
+                        return new Response(
+                            404, "Not Found",
+                            new Dictionary<string, object>
+                                {
+                                    {"date", DateTime.UtcNow},
+                                    {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
+                                    {"content-type", "text/html"},
+                                    {"content-length", body404.Length}
+                                },
+                            body404);
 
-                              }).Wait();
+                    })).Wait();
         }
 
         private static Int32 GetPort(string[] args)
