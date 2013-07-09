@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CustomWebServer.Helpers;
 using CustomWebServer.Lib;
 
 namespace CustomWebServer
@@ -28,6 +29,19 @@ namespace CustomWebServer
                         {"content-length", body.Length}
                         },
                     body);
+                }
+
+                if(request.RequestUri.LocalPath == "/index.html")
+                {
+                    return new Response(
+                    302,
+                    "Found",
+                    new Dictionary<string, object>
+                        {
+                        {"date", DateTime.UtcNow},
+                        {"server", "JWC/1.0 Josh's Awesomesauce Server!!!!"},
+                        {"location", request.RequestUri.RebaseTo("/")}
+                        });
                 }
 
                 var body404 = "<h1>No soup for you!</h1>";

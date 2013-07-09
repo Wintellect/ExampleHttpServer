@@ -48,6 +48,7 @@
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\HeaderValueExtensions.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
+    <Compile Include="Helpers\UriHelpers.cs" />
     <Compile Include="Lib\IRequest.cs" />
     <Compile Include="Lib\IResponse.cs" />
     <Compile Include="Lib\Server.cs" />
