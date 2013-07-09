@@ -18,6 +18,7 @@ namespace CustomWebServer.Handlers
             _rootDirectory = new DirectoryInfo(rootDirectory);
             _defaultFileName = defaultFile ?? String.Empty;
             _404 = new FileInfo(Path.Combine(_rootDirectory.FullName, "404.html"));
+            _contentTypes = SetupContentTypes();
         }
 
         public async Task<IResponse> HandleRequest(IRequest request)
@@ -37,7 +38,7 @@ namespace CustomWebServer.Handlers
         {
             return new Dictionary<String, Object>
                               {
-                                  {"content-type", "text/html"},
+                                  {"content-type", GetContentType(fileInfo.Extension)},
                                   {"content-length", fileInfo.Length}
                               };
         }
@@ -63,6 +64,30 @@ namespace CustomWebServer.Handlers
             }
 
             return Path.Combine(rootPath, virtualPath);
+        }
+
+        private String GetContentType(string extension)
+        {
+            return _contentTypes.ContainsKey(extension)
+                       ? _contentTypes[extension]
+                       : _contentTypes[".bin"];
+        }
+
+        private static IDictionary<string, string> SetupContentTypes()
+        {
+            return new Dictionary<string, string>
+                       {
+                           {".txt", "text/plain"},
+                           {".htm", "text/html"},
+                           {".html", "text/html"},
+                           {".css", "text/css"},
+                           {".js", "application/javascript"},
+                           {".jpg", "image/jpeg"},
+                           {".jpeg", "image/jpeg"},
+                           {".gif", "image/gif"},
+                           {".png", "image/png"},
+                           {".bin", "application/octet-stream"}
+                       };
         }
     }
 }
