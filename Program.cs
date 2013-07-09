@@ -14,6 +14,8 @@ namespace CustomWebServer
             var server = new Server("127.0.0.1", port);
 
             var router = new RoutingHandler();
+            router.CreateRoute(@"/PostbackHandler", new PostbackHandler());
+            router.CreateRoute(@"/Echo", new EchoRequestHandler());
             router.CreateRoute(@"/|(\..+)$", new StaticFileHandler(@"C:\Dev\CustomWebServer\TestWebSite", "index.html"));
             router.SetDefaultHandler(new FileNotFoundHandler());
 

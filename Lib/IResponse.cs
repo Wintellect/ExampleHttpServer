@@ -19,7 +19,7 @@ namespace CustomWebServer.Lib
         public IDictionary<string, object> Headers { get; private set; }
         public Object Body { get; set; }
 
-        public Response(Int32 status, String description, IDictionary<String, Object> headers, Object body = null)
+        public Response(Int32 status, String description, IDictionary<String, Object> headers = null, Object body = null)
         {
             StatusCode = status;
             StatusDescription = description;
