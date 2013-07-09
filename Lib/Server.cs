@@ -93,7 +93,7 @@ namespace CustomWebServer.Lib
 
             foreach (var header in response.Headers)
             {
-                sb.AppendFormat("{0}: {1}", header.Key, header.Value);
+                sb.AppendFormat("{0}: {1}{2}", header.Key, header.Value, Environment.NewLine);
             }
 
             sb.AppendLine();
