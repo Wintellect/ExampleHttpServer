@@ -119,7 +119,7 @@ namespace CustomWebServer.Lib
         {
             var sb = new StringBuilder();
 
-            sb.AppendFormat("HTTP/1.1 {0}{1}", response.StatusCode, Environment.NewLine);
+            sb.AppendFormat("HTTP/1.1 {0} {1}{2}", response.StatusCode, response.StatusDescription, Environment.NewLine);
 
             AddMissingHeaders(response);
 

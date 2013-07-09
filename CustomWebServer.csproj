@@ -52,6 +52,9 @@
     <Compile Include="Handlers\GenericHandler.cs" />
     <Compile Include="Handlers\PlainTextHandler.cs" />
     <Compile Include="Handlers\RedirectHandler.cs" />
+    <Compile Include="Helpers\RequestExtensions.cs" />
+    <Compile Include="Helpers\DateTimeExtensions.cs" />
+    <Compile Include="Helpers\ETag.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\HeaderValueExtensions.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />

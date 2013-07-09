@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CustomWebServer.Helpers;
 using CustomWebServer.Lib;
 using System.IO;
 
@@ -13,7 +14,7 @@ namespace CustomWebServer.Handlers
         private readonly FileInfo _404;
         private readonly IDictionary<String, String> _contentTypes;
 
-        public StaticFileHandler(String rootDirectory, String defaultFile = null)
+        public StaticFileHandler(string rootDirectory, string defaultFile = null)
         {
             _rootDirectory = new DirectoryInfo(rootDirectory);
             _defaultFileName = defaultFile ?? String.Empty;
@@ -28,19 +29,43 @@ namespace CustomWebServer.Handlers
 
             if (fileInfo.Exists)
             {
-                return new Response(200, "OK", CreateResponseHeaders(fileInfo), fileInfo.OpenRead());
+                var etag = CreateEtag(fileInfo);
+
+                if (request.IsExpired(fileInfo.LastWriteTime, etag))
+                {
+                    return new Response(200, "OK", CreateResponseHeaders(fileInfo), fileInfo.OpenRead());
+                }
+
+                return new Response(304, "Not Modified", CreateResponseHeaders(fileInfo, true));
             }
 
             return new Response(404, "Not Found", CreateResponseHeaders(_404), _404.OpenRead());
         }
 
-        private IDictionary<String, Object> CreateResponseHeaders(FileInfo fileInfo)
+        private IDictionary<string, object> CreateResponseHeaders(FileInfo fileInfo, Boolean excludeEntityHeaders = false)
         {
-            return new Dictionary<String, Object>
+            var headers = new Dictionary<String, Object>
                               {
-                                  {"content-type", GetContentType(fileInfo.Extension)},
-                                  {"content-length", fileInfo.Length}
+                                  {"expires", DateTime.UtcNow.AddHours(1)},
+                                  {"cache-control", TimeSpan.FromHours(1)},
+                                  {"last-modified", fileInfo.LastWriteTimeUtc},
+                                  {"etag", CreateEtag(fileInfo)}
                               };
+
+            if (!excludeEntityHeaders)
+            {
+                headers.Add("content-type", GetContentType(fileInfo.Extension));
+                headers.Add("content-length", fileInfo.Length);
+            }
+
+            return headers;
+        }
+
+        private String GetContentType(string extension)
+        {
+            return _contentTypes.ContainsKey(extension)
+                       ? _contentTypes[extension]
+                       : _contentTypes[".bin"];
         }
 
         private string CreateFilePath(IRequest request)
@@ -66,11 +91,9 @@ namespace CustomWebServer.Handlers
             return Path.Combine(rootPath, virtualPath);
         }
 
-        private String GetContentType(string extension)
+        private static string CreateEtag(FileInfo fileInfo)
         {
-            return _contentTypes.ContainsKey(extension)
-                       ? _contentTypes[extension]
-                       : _contentTypes[".bin"];
+            return ETag.Create(fileInfo.FullName, fileInfo.Length, fileInfo.LastWriteTimeUtc.Ticks);
         }
 
         private static IDictionary<string, string> SetupContentTypes()
