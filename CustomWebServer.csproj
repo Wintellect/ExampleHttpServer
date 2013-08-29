@@ -97,6 +97,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SampleTemplate.cshtml</DependentUpon>
     </Compile>
+    <Compile Include="Services\ChatRequest.cs" />
+    <Compile Include="Services\ChatService.cs" />
+    <Compile Include="Services\Message.cs" />
     <Compile Include="Services\TaskService.cs" />
     <Compile Include="Views\PostBackHandlerView.generated.cs">
       <AutoGen>True</AutoGen>

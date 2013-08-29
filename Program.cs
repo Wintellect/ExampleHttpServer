@@ -15,10 +15,8 @@ namespace CustomWebServer
             var server = new Server("127.0.0.1", port);
 
             var router = new RoutingHandler();
-            router.CreateRoute(@"/api/ToDo", new RestHandler<ToDoService>());
-            router.CreateRoute(@"/PostbackHandler", new PostbackHandler());
-            router.CreateRoute(@"/Echo", new EchoRequestHandler());
-            router.CreateRoute(@"/|(\..+)$", new StaticFileHandler(@"C:\Dev\CustomWebServer\angularjs_todo", "index.html"));
+            router.CreateRoute(@"/api/chat", new RestHandler<ChatService>());
+            router.CreateRoute(@"/|(\..+)$", new StaticFileHandler(@"C:\Dev\CustomWebServer\chat", "index.html"));
             router.SetDefaultHandler(new FileNotFoundHandler());
 
             server.StartAsync(router).Wait();
