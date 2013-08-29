@@ -20,6 +20,15 @@
       <script src="js/html5shiv.js"></script>
       <script src="js/respond.min.js"></script>
     <![endif]-->
+	<style>
+		.chatMessage{
+			font-size:1.25em;
+		}
+		#chats {
+    height:400px;
+    overflow-y:scroll;
+}
+	</style>
   </head>
 
   <body>
@@ -51,13 +60,19 @@
 		</div>
 		<div id="target" class="container">
 			<div class="row">
-				<div class="col-md-12" data-bind="foreach: chats">
-					<div data-bind="text: messageText"></div>
+				<div class="col-md-12">
+					<div id="chats">
+					<table class="table table-striped" data-bind="foreach: chats">
+						<tr>
+							<td class="chatMessage" data-bind="text: messageText"></td>
+						</tr>
+					</table>
+					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<form class="form-inline" role="form">
+					<form class="form" role="form">
 					  <div class="form-group">
 						<input type="text" class="form-control" data-bind="value:message" placeholder="Type Something">
 					  </div>
@@ -92,7 +107,7 @@
 				$this.chats = ko.observableArray();
 				
 				$this.highestOrderRecieved = ko.observable(0);
-								
+				
 				$this.sendMessage = function(){
 					var data = {
 						highestOrderRecieved: $this.highestOrderRecieved(),
@@ -108,11 +123,18 @@
 						console.log(chats);
 						
 						if(!_.isArray(chats)) return;
-						
-						_.each(chats, function(c){
-							$this.chats.push(c);
+												
+						_.each(chats, function(newChat){
+							var exists = _.find($this.chats(), function(c){
+								return c.orderNum === newChat.orderNum;
+							});
+							
+							if(!exists){
+								$this.chats.push(newChat);
+							}
 						});
 						
+						$this.message('');
 						$this.highestOrderRecieved(getHighestOrder());
 					});
 				};
@@ -132,8 +154,14 @@
 						
 						if(!_.isArray(chats)) return;
 						
-						_.each(chats, function(c){
-							$this.chats.push(c);
+						_.each(chats, function(newChat){
+							var exists = _.find($this.chats(), function(c){
+								return c.orderNum === newChat.orderNum;
+							});
+							
+							if(!exists){
+								$this.chats.push(newChat);
+							}
 						});
 						
 						$this.highestOrderRecieved(getHighestOrder());
@@ -151,7 +179,13 @@
 				}
 			};
 		
-			ko.applyBindings(new chatViewModel());
+			var vm = new chatViewModel();
+		
+			vm.chats.subscribe(_.debounce(function(){
+				$("#chats").scrollTop($("#chats")[0].scrollHeight);
+			}, 50));
+		
+			ko.applyBindings(vm);
 		
 		}());
 	</script>
